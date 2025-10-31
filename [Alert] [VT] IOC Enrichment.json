@@ -1,0 +1,42 @@
+{
+  "version": "1",
+  "dslSpecVersion": "1.1.0",
+  "actionsSpecVersion": "1",
+  "executionFlow": [
+    {
+      "action": {
+        "function": {
+          "type": "executeCustomScript",
+          "params": {
+            "commandLine": "python3.10 /root/XDR/virustotal_server.py",
+            "commandLineParameters": "${[ alert.Observables[]\n  | { \"type\": .Type, \"value\": .Value }\n  | select(.type == \"ip\" or .type == \"sha256\" or .type == \"md5\" or .type == \"url\" or .type == \"domain\")\n] | @json}",
+            "stdIn": "",
+            "workingDirectory": ""
+          }
+        },
+        "onError": "stop",
+        "timeout": {
+          "scheduleToCloseTimeout": "24h"
+        },
+        "output": {
+          "filter": "${ {VTEnrichment: .} }",
+          "action": "overwrite"
+        }
+      }
+    },
+    {
+      "action": {
+        "function": {
+          "type": "addCommentToAlert",
+          "params": {
+            "text": "${ \"VirusTotal database: \\n\n\" + .VTEnrichment.details.stdOut }"
+          }
+        },
+        "onError": "stop",
+        "timeout": {
+          "scheduleToCloseTimeout": "24h"
+        }
+      }
+    }
+  ]
+}
