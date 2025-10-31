@@ -1,0 +1,39 @@
+{
+  "dslSpecVersion": "1.1.0",
+  "actionsSpecVersion": "1",
+  "inputType": "alert",
+  "executionFlow": [
+    {
+      "action": {
+        "filterProduct": {
+          "notAllowed": [
+            "KATA"
+          ]
+        },
+        "function": {
+          "type": "executeCustomScript",
+          "params": {
+            "commandLine": "python3.10 /root/XDR/Playbook/fortinet.py",
+            "commandLineParameters": "${add_web_filter_rule --u=\"\" + ([ alert.Observables[] | select(.Type == \"url\") | .Value ] | join(\", \")) + \"\"}",
+            "stdIn": "",
+            "workingDirectory": ""
+          }
+        },
+        "output": {
+          "filter": "${ . }",
+          "action": "overwrite"
+        }
+      }
+    }
+  ],
+  "name": "Unblock URLS on Fortigate",
+  "timeouts": [
+    {
+      "name": "default",
+      "scheduleToCloseTimeout": "20m"
+    }
+  ],
+  "playbookRunTimeout": "30m",
+  "version": "1",
+  "description": "Playbook to unblock Urls using Fortigate script"
+}
