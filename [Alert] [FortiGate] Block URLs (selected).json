@@ -1,0 +1,39 @@
+{
+  "dslSpecVersion": "1.1.0",
+  "actionsSpecVersion": "1",
+  "inputType": "alert",
+  "executionFlow": [
+    {
+      "action": {
+        "filterProduct": {
+          "notAllowed": [
+            "KATA"
+          ]
+        },
+        "function": {
+          "type": "executeCustomScript",
+          "params": {
+            "commandLine": "python3.10 /root/XDR/Playbook/fortinet.py",
+            "commandLineParameters": "${add_web_filter_rule --u=\"\" + ([ .input.observables[] | select(.type == \"url\") | .value ] | join(\", \")) + \"\"}",
+            "stdIn": "",
+            "workingDirectory": ""
+          }
+        },
+        "output": {
+          "filter": "${ . }",
+          "action": "overwrite"
+        }
+      }
+    }
+  ],
+  "name": "Block URLS on Fortigate",
+  "timeouts": [
+    {
+      "name": "default",
+      "scheduleToCloseTimeout": "20m"
+    }
+  ],
+  "playbookRunTimeout": "30m",
+  "version": "1",
+  "description": "Playbook to block Urls using Fortigate script"
+}
