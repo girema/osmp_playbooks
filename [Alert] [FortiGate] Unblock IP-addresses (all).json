@@ -1,0 +1,39 @@
+{
+  "dslSpecVersion": "1.1.0",
+  "actionsSpecVersion": "1",
+  "inputType": "alert",
+  "executionFlow": [
+    {
+      "action": {
+        "filterProduct": {
+          "notAllowed": [
+            "KATA"
+          ]
+        },
+        "function": {
+          "type": "executeCustomScript",
+          "params": {
+            "commandLine": "python3.10 /root/XDR/Playbook/fortinet.py",
+            "commandLineParameters": "${\"delete_firewall_rule --ip_address=\" + ([ alert.Observables[] | select(.Type == \"ip\") | .Value ] | join(\",\"))}",
+            "stdIn": "",
+            "workingDirectory": ""
+          }
+        },
+        "output": {
+          "filter": "${ . }",
+          "action": "overwrite"
+        }
+      }
+    }
+  ],
+  "name": "Unblock ip-addresses on Fortigate",
+  "timeouts": [
+    {
+      "name": "default",
+      "scheduleToCloseTimeout": "20m"
+    }
+  ],
+  "playbookRunTimeout": "30m",
+  "version": "1",
+  "description": "Playbook to unblock IP addresses using Fortigate script"
+}
