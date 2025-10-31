@@ -1,0 +1,414 @@
+{
+  "version": "1",
+  "dslSpecVersion": "1.1.0",
+  "actionsSpecVersion": "1",
+  "executionFlow": [
+    {
+      "parallel": {
+        "input": "${.}",
+        "branches": [
+          {
+            "name": "Branch 10",
+            "steps": [
+              {
+                "action": {
+                  "function": {
+                    "type": "executeCustomScript",
+                    "params": {
+                      "commandLine": "/root/XDR/get_user_sessions.sh",
+                      "commandLineParameters": "${\"--action collect_cron_jobs --host \" + (alert.Observables | map(select(.Type==\"hostname\") | .Value | split(\"\\\\\") | .[-1]) | join(\",\"))}",
+                      "stdIn": "",
+                      "workingDirectory": ""
+                    }
+                  },
+                  "onError": "stop",
+                  "timeout": {
+                    "scheduleToCloseTimeout": "24h"
+                  },
+                  "output": {
+                    "filter": "${ {collectCron: .} }",
+                    "action": "overwrite"
+                  }
+                }
+              },
+              {
+                "action": {
+                  "function": {
+                    "type": "addCommentToAlert",
+                    "params": {
+                      "text": "${ \"Cron scheduler information: \\n\n\" + .collectCron.details.stdOut }"
+                    }
+                  },
+                  "onError": "stop",
+                  "timeout": {
+                    "scheduleToCloseTimeout": "24h"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "name": "Branch 9",
+            "steps": [
+              {
+                "action": {
+                  "function": {
+                    "type": "executeCustomScript",
+                    "params": {
+                      "commandLine": "/root/XDR/get_user_sessions.sh",
+                      "commandLineParameters": "${\"--action get_system_info --host \" + (alert.Observables | map(select(.Type==\"hostname\") | .Value | split(\"\\\\\") | .[-1]) | join(\",\"))}",
+                      "stdIn": "",
+                      "workingDirectory": ""
+                    }
+                  },
+                  "onError": "stop",
+                  "timeout": {
+                    "scheduleToCloseTimeout": "24h"
+                  },
+                  "output": {
+                    "filter": "${ {getInfo: .} }",
+                    "action": "overwrite"
+                  }
+                }
+              },
+              {
+                "action": {
+                  "function": {
+                    "type": "addCommentToAlert",
+                    "params": {
+                      "text": "${ \"System information: \\n\n\" + .getInfo.details.stdOut }"
+                    }
+                  },
+                  "onError": "stop",
+                  "timeout": {
+                    "scheduleToCloseTimeout": "24h"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "name": "Branch 8",
+            "steps": [
+              {
+                "action": {
+                  "function": {
+                    "type": "executeCustomScript",
+                    "params": {
+                      "commandLine": "/root/XDR/get_user_sessions.sh",
+                      "commandLineParameters": "${\"--action get_iptables_rules --host \" + (alert.Observables | map(select(.Type==\"hostname\") | .Value | split(\"\\\\\") | .[-1]) | join(\",\"))}",
+                      "stdIn": "",
+                      "workingDirectory": ""
+                    }
+                  },
+                  "onError": "stop",
+                  "timeout": {
+                    "scheduleToCloseTimeout": "24h"
+                  },
+                  "output": {
+                    "filter": "${ {ipTables: .} }",
+                    "action": "overwrite"
+                  }
+                }
+              },
+              {
+                "action": {
+                  "function": {
+                    "type": "addCommentToAlert",
+                    "params": {
+                      "text": "${ \"Iptables information: \\n\n\" + .ipTables.details.stdOut }"
+                    }
+                  },
+                  "onError": "stop",
+                  "timeout": {
+                    "scheduleToCloseTimeout": "24h"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "name": "Branch 7",
+            "steps": [
+              {
+                "action": {
+                  "function": {
+                    "type": "executeCustomScript",
+                    "params": {
+                      "commandLine": "/root/XDR/get_user_sessions.sh",
+                      "commandLineParameters": "${\"--action get_installed_packages --host \" + (alert.Observables | map(select(.Type==\"hostname\") | .Value | split(\"\\\\\") | .[-1]) | join(\",\"))}",
+                      "stdIn": "",
+                      "workingDirectory": ""
+                    }
+                  },
+                  "onError": "stop",
+                  "timeout": {
+                    "scheduleToCloseTimeout": "24h"
+                  },
+                  "output": {
+                    "filter": "${ {installedPackages: .} }",
+                    "action": "overwrite"
+                  }
+                }
+              },
+              {
+                "action": {
+                  "function": {
+                    "type": "addCommentToAlert",
+                    "params": {
+                      "text": "${ \"Installed packages: \\n\n\" + .installedPackages.details.stdOut }"
+                    }
+                  },
+                  "onError": "stop",
+                  "timeout": {
+                    "scheduleToCloseTimeout": "24h"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "name": "Branch 6",
+            "steps": [
+              {
+                "action": {
+                  "function": {
+                    "type": "executeCustomScript",
+                    "params": {
+                      "commandLine": "/root/XDR/get_user_sessions.sh",
+                      "commandLineParameters": "${\"--action get_daemons_list --host \" + (alert.Observables | map(select(.Type==\"hostname\") | .Value | split(\"\\\\\") | .[-1]) | join(\",\"))}",
+                      "stdIn": "",
+                      "workingDirectory": ""
+                    }
+                  },
+                  "onError": "stop",
+                  "timeout": {
+                    "scheduleToCloseTimeout": "24h"
+                  },
+                  "output": {
+                    "filter": "${ {deamonsList: .} }",
+                    "action": "overwrite"
+                  }
+                }
+              },
+              {
+                "action": {
+                  "function": {
+                    "type": "addCommentToAlert",
+                    "params": {
+                      "text": "${ \"Deamons list: \\n\n\" + .deamonsList.details.stdOut }"
+                    }
+                  },
+                  "onError": "stop",
+                  "timeout": {
+                    "scheduleToCloseTimeout": "24h"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "name": "Branch 5",
+            "steps": [
+              {
+                "action": {
+                  "function": {
+                    "type": "executeCustomScript",
+                    "params": {
+                      "commandLine": "/root/XDR/get_user_sessions.sh",
+                      "commandLineParameters": "${\"--action get_network_connections --host \" + (alert.Observables | map(select(.Type==\"hostname\") | .Value | split(\"\\\\\") | .[-1]) | join(\",\"))}",
+                      "stdIn": "",
+                      "workingDirectory": ""
+                    }
+                  },
+                  "onError": "stop",
+                  "timeout": {
+                    "scheduleToCloseTimeout": "24h"
+                  },
+                  "output": {
+                    "filter": "${ {networkConnections: .} }",
+                    "action": "overwrite"
+                  }
+                }
+              },
+              {
+                "action": {
+                  "function": {
+                    "type": "addCommentToAlert",
+                    "params": {
+                      "text": "${ \"Network connections: \\n\n\" + .networkConnections.details.stdOut }"
+                    }
+                  },
+                  "onError": "stop",
+                  "timeout": {
+                    "scheduleToCloseTimeout": "24h"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "name": "Branch 4",
+            "steps": [
+              {
+                "action": {
+                  "function": {
+                    "type": "executeCustomScript",
+                    "params": {
+                      "commandLine": "/root/XDR/get_user_sessions.sh",
+                      "commandLineParameters": "${\"--action get_network_interfaces --host \" + (alert.Observables | map(select(.Type==\"hostname\") | .Value | split(\"\\\\\") | .[-1]) | join(\",\"))}",
+                      "stdIn": "",
+                      "workingDirectory": ""
+                    }
+                  },
+                  "onError": "stop",
+                  "timeout": {
+                    "scheduleToCloseTimeout": "24h"
+                  },
+                  "output": {
+                    "filter": "${ {networkInterfaces: .} }",
+                    "action": "overwrite"
+                  }
+                }
+              },
+              {
+                "action": {
+                  "function": {
+                    "type": "addCommentToAlert",
+                    "params": {
+                      "text": "${ \"Network interfaces: \\n\n\" + .networkInterfaces.details.stdOut }"
+                    }
+                  },
+                  "onError": "stop",
+                  "timeout": {
+                    "scheduleToCloseTimeout": "24h"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "name": "Branch 3",
+            "steps": [
+              {
+                "action": {
+                  "function": {
+                    "type": "executeCustomScript",
+                    "params": {
+                      "commandLine": "/root/XDR/get_user_sessions.sh",
+                      "commandLineParameters": "${\"--action get_process_list --host \" + (alert.Observables | map(select(.Type==\"hostname\") | .Value | split(\"\\\\\") | .[-1]) | join(\",\"))}",
+                      "stdIn": "",
+                      "workingDirectory": ""
+                    }
+                  },
+                  "onError": "stop",
+                  "timeout": {
+                    "scheduleToCloseTimeout": "24h"
+                  },
+                  "output": {
+                    "filter": "${ {processList: .} }",
+                    "action": "overwrite"
+                  }
+                }
+              },
+              {
+                "action": {
+                  "function": {
+                    "type": "addCommentToAlert",
+                    "params": {
+                      "text": "${ \"Process list: \\n\n\" + .processList.details.stdOut }"
+                    }
+                  },
+                  "onError": "stop",
+                  "timeout": {
+                    "scheduleToCloseTimeout": "24h"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "name": "Branch 2",
+            "steps": [
+              {
+                "action": {
+                  "function": {
+                    "type": "executeCustomScript",
+                    "params": {
+                      "commandLine": "/root/XDR/get_user_sessions.sh",
+                      "commandLineParameters": "${\"--action get_sudo_users --host \" + (alert.Observables | map(select(.Type==\"hostname\") | .Value | split(\"\\\\\") | .[-1]) | join(\",\"))}",
+                      "stdIn": "",
+                      "workingDirectory": ""
+                    }
+                  },
+                  "onError": "stop",
+                  "timeout": {
+                    "scheduleToCloseTimeout": "24h"
+                  },
+                  "output": {
+                    "filter": "${ {sudoUsers: .} }",
+                    "action": "overwrite"
+                  }
+                }
+              },
+              {
+                "action": {
+                  "function": {
+                    "type": "addCommentToAlert",
+                    "params": {
+                      "text": "${ \"Sudo users: \\n\n\" + .sudoUsers.details.stdOut }"
+                    }
+                  },
+                  "onError": "stop",
+                  "timeout": {
+                    "scheduleToCloseTimeout": "24h"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "name": "Branch 1",
+            "steps": [
+              {
+                "action": {
+                  "function": {
+                    "type": "executeCustomScript",
+                    "params": {
+                      "commandLine": "/root/XDR/get_user_sessions.sh",
+                      "commandLineParameters": "${\"--action get_user_sessions --host \" + (alert.Observables | map(select(.Type==\"hostname\") | .Value | split(\"\\\\\") | .[-1]) | join(\",\"))}",
+                      "stdIn": "",
+                      "workingDirectory": ""
+                    }
+                  },
+                  "onError": "stop",
+                  "timeout": {
+                    "scheduleToCloseTimeout": "24h"
+                  },
+                  "output": {
+                    "filter": "${ {userSessions: .} }",
+                    "action": "overwrite"
+                  }
+                }
+              },
+              {
+                "action": {
+                  "function": {
+                    "type": "addCommentToAlert",
+                    "params": {
+                      "text": "${ \"User sessions: \\n\n\" + .userSessions.details.stdOut }"
+                    }
+                  },
+                  "onError": "stop",
+                  "timeout": {
+                    "scheduleToCloseTimeout": "24h"
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
