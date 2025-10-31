@@ -1,0 +1,42 @@
+{
+  "version": "1",
+  "dslSpecVersion": "1.1.0",
+  "actionsSpecVersion": "1",
+  "executionFlow": [
+    {
+      "action": {
+        "function": {
+          "type": "executeCustomScript",
+          "params": {
+            "commandLine": "/root/XDR/get_user_sessions.sh",
+            "commandLineParameters": "${\"--action collect_cron_jobs --host \" + (alert.Observables | map(select(.Type==\"hostname\") | .Value | split(\"\\\\\") | .[-1]) | join(\",\"))}",
+            "stdIn": "",
+            "workingDirectory": ""
+          }
+        },
+        "onError": "stop",
+        "timeout": {
+          "scheduleToCloseTimeout": "24h"
+        },
+        "output": {
+          "filter": "${ {collectCron: .} }",
+          "action": "overwrite"
+        }
+      }
+    },
+    {
+      "action": {
+        "function": {
+          "type": "addCommentToAlert",
+          "params": {
+            "text": "${ \"Cron scheduler information: \\n\n\" + .collectCron.details.stdOut }"
+          }
+        },
+        "onError": "stop",
+        "timeout": {
+          "scheduleToCloseTimeout": "24h"
+        }
+      }
+    }
+  ]
+}
