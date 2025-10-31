@@ -1,0 +1,39 @@
+{
+  "dslSpecVersion": "1.1.0",
+  "actionsSpecVersion": "1",
+  "inputType": "alert",
+  "executionFlow": [
+    {
+      "action": {
+        "filterProduct": {
+          "notAllowed": [
+            "KATA"
+          ]
+        },
+        "function": {
+          "type": "executeCustomScript",
+          "params": {
+            "commandLine": "python3.10 /root/XDR/Playbook/fortinet.py",
+            "commandLineParameters": "${delete_domain_filter_rule -d=\"\" + ([ .input.observables[] | select(.type == \"domain\") | .value ] | join(\", \")) + \"\"}",
+            "stdIn": "",
+            "workingDirectory": ""
+          }
+        },
+        "output": {
+          "filter": "${ . }",
+          "action": "overwrite"
+        }
+      }
+    }
+  ],
+  "name": "Unblock domains on Fortigate",
+  "timeouts": [
+    {
+      "name": "default",
+      "scheduleToCloseTimeout": "20m"
+    }
+  ],
+  "playbookRunTimeout": "30m",
+  "version": "1",
+  "description": "Playbook to unblock domains using Fortigate script"
+}
