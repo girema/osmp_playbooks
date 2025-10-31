@@ -1,0 +1,46 @@
+{
+  "dslSpecVersion": "1.1.0",
+  "actionsSpecVersion": "1",
+  "inputType": "alert",
+  "executionFlow": [
+    {
+      "action": {
+        "function": {
+          "type": "iocsEnrichment",
+          "params": {
+            "fullEnrichment": true,
+            "observables": "${[ alert.Observables[] | {\"type\": .Type, \"value\": .Value} | select((.type==\"md5\") or(.type==\"ip\") or(.type==\"domain\") )]}"
+          }
+        },
+        "output": {
+          "filter": "${ {IOCEnrichment: .} }",
+          "action": "overwrite"
+        }
+      }
+    },
+    {
+      "action": {
+        "function": {
+          "type": "addCommentToAlert",
+          "params": {
+            "text": "${ \"IOC enrichment information from TIP: \\n\n\" + .IOCEnrichment.details.stdOut }"
+          }
+        },
+        "onError": "stop",
+        "timeout": {
+          "scheduleToCloseTimeout": "24h"
+        }
+      }
+    }
+  ],
+  "name": "XDR_observabilies_enrichment",
+  "timeouts": [
+    {
+      "name": "default",
+      "scheduleToCloseTimeout": "20m"
+    }
+  ],
+  "playbookRunTimeout": "30m",
+  "version": "1",
+  "description": ""
+}
