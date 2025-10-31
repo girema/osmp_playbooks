@@ -1,0 +1,134 @@
+{
+  "version": "1",
+  "dslSpecVersion": "1.1.0",
+  "actionsSpecVersion": "1",
+  "executionFlow": [
+    {
+      "parallel": {
+        "input": "${.}",
+        "branches": [
+          {
+            "name": "Branch 1",
+            "steps": [
+              {
+                "action": {
+                  "function": {
+                    "type": "executeCustomScript",
+                    "params": {
+                      "commandLine": "/root/XDR/get_user_sessions.sh",
+                      "commandLineParameters": "${\"--action isolate_host --host \" + (alert.Observables | map(select(.Type==\"hostname\") | .Value | split(\"\\\\\") | .[-1]) | join(\",\"))}",
+                      "stdIn": "",
+                      "workingDirectory": ""
+                    }
+                  },
+                  "onError": "stop",
+                  "timeout": {
+                    "scheduleToCloseTimeout": "24h"
+                  },
+                  "output": {
+                    "filter": "${ {isolateHost: .} }",
+                    "action": "overwrite"
+                  }
+                }
+              },
+              {
+                "action": {
+                  "function": {
+                    "type": "addCommentToAlert",
+                    "params": {
+                      "text": "${ .isolateHost.details.stdOut }"
+                    }
+                  },
+                  "onError": "stop",
+                  "timeout": {
+                    "scheduleToCloseTimeout": "24h"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "name": "Branch 2",
+            "steps": [
+              {
+                "action": {
+                  "function": {
+                    "type": "executeCustomScript",
+                    "params": {
+                      "commandLine": "/root/XDR/get_user_sessions.sh",
+                      "commandLineParameters": "${\"--action remove_from_admins --host \" + (alert.Observables | map(select(.Type==\"hostname\") | .Value | split(\"\\\\\") | .[-1]) | join(\",\"))}",
+                      "stdIn": "",
+                      "workingDirectory": ""
+                    }
+                  },
+                  "onError": "stop",
+                  "timeout": {
+                    "scheduleToCloseTimeout": "24h"
+                  },
+                  "output": {
+                    "filter": "${ {removeFromAdmins: .} }",
+                    "action": "overwrite"
+                  }
+                }
+              },
+              {
+                "action": {
+                  "function": {
+                    "type": "addCommentToAlert",
+                    "params": {
+                      "text": "${ .removeFromAdmins.details.stdOut }"
+                    }
+                  },
+                  "onError": "stop",
+                  "timeout": {
+                    "scheduleToCloseTimeout": "24h"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "name": "Branch 3",
+            "steps": [
+              {
+                "action": {
+                  "function": {
+                    "type": "executeCustomScript",
+                    "params": {
+                      "commandLine": "/root/XDR/get_user_sessions.sh",
+                      "commandLineParameters": "${\"--action disable_ssh_access --host \" + (alert.Observables | map(select(.Type==\"hostname\") | .Value | split(\"\\\\\") | .[-1]) | join(\",\"))}",
+                      "stdIn": "",
+                      "workingDirectory": ""
+                    }
+                  },
+                  "onError": "stop",
+                  "timeout": {
+                    "scheduleToCloseTimeout": "24h"
+                  },
+                  "output": {
+                    "filter": "${ {disableSSH: .} }",
+                    "action": "overwrite"
+                  }
+                }
+              },
+              {
+                "action": {
+                  "function": {
+                    "type": "addCommentToAlert",
+                    "params": {
+                      "text": "${ .disableSSH.details.stdOut }"
+                    }
+                  },
+                  "onError": "stop",
+                  "timeout": {
+                    "scheduleToCloseTimeout": "24h"
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
