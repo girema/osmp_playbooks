@@ -1,0 +1,90 @@
+{
+  "version": "1",
+  "dslSpecVersion": "1.1.0",
+  "actionsSpecVersion": "1",
+  "playbookRunTimeout": "24h",
+  "executionFlow": [
+    {
+      "loop": {
+        "input": "${alert.Observables | map(select(.Type==\"username\") | .Value | split(\"\\\\\") | .[-1])}",
+        "steps": [
+          {
+            "updateData": {
+              "action": "overwrite",
+              "filter": "${{\"user\": .[0]}}"
+            }
+          },
+          {
+            "action": {
+              "function": {
+                "type": "executeCustomScript",
+                "params": {
+                  "commandLine": "python3.10 /root/XDR/ad_user.py",
+                  "commandLineParameters": "${\"--action info --users \" + .user}",
+                  "stdIn": "",
+                  "workingDirectory": ""
+                }
+              },
+              "onError": "continue",
+              "timeout": {
+                "scheduleToCloseTimeout": "24h"
+              },
+              "output": {
+                "action": "merge",
+                "filter": "${{\"Information\": .details.stdOut}}"
+              }
+            }
+          },
+          {
+            "decision": {
+              "conditions": [
+                {
+                  "condition": "${.exitCode==null or .exitCode==0}",
+                  "name": "Condition 2",
+                  "steps": [
+                    {
+                      "action": {
+                        "function": {
+                          "type": "addCommentToAlert",
+                          "params": {
+                            "text": "${\"Information about user account \" + .user + \" has been recieved. \\nSystem information:\\n \" + .Information}"
+                          }
+                        },
+                        "onError": "stop",
+                        "timeout": {
+                          "scheduleToCloseTimeout": "24h"
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "condition": "${.exitCode>0}",
+                  "name": "Condition 1",
+                  "steps": [
+                    {
+                      "action": {
+                        "function": {
+                          "type": "addCommentToAlert",
+                          "params": {
+                            "text": "${\"Information about user account \" + .user + \" has not been recieved.\"}"
+                          }
+                        },
+                        "onError": "stop",
+                        "timeout": {
+                          "scheduleToCloseTimeout": "24h"
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ],
+        "onError": "continue",
+        "batchSize": 1
+      }
+    }
+  ]
+}
