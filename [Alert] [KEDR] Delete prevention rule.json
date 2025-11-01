@@ -1,0 +1,25 @@
+{
+  "version": "1",
+  "dslSpecVersion": "1.1.0",
+  "actionsSpecVersion": "1",
+  "executionFlow": [
+    {
+      "action": {
+        "function": {
+          "type": "deleteFilePreventionRules",
+          "params": {
+            "files": [
+              "SOME_MD5",
+              "SOME_SHA256"
+            ]
+          },
+          "assets": "${[ alert.Assets[] | select(.Type == \"host\") | .ID ]}"
+        },
+        "onError": "stop",
+        "timeout": {
+          "scheduleToCloseTimeout": "24h"
+        }
+      }
+    }
+  ]
+}
