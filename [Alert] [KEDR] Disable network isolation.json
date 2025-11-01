@@ -1,0 +1,25 @@
+{
+  "dslSpecVersion": "1.1.0",
+  "actionsSpecVersion": "1",
+  "inputType": "alert",
+  "executionFlow": [
+    {
+      "action": {
+        "function": {
+          "type": "netIsolateOff",
+          "assets": "${[alert.Assets[] | select(.Type==\"host\") | map(.ID) ]}"
+        }
+      }
+    }
+  ],
+  "name": "KEDR network isolation (disabled)",
+  "timeouts": [
+    {
+      "name": "default",
+      "scheduleToCloseTimeout": "20m"
+    }
+  ],
+  "playbookRunTimeout": "30m",
+  "version": "1",
+  "description": "number of actions"
+}
