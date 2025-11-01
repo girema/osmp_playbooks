@@ -1,0 +1,43 @@
+{
+  "dslSpecVersion": "1.1.0",
+  "actionsSpecVersion": "1",
+  "inputType": "alert",
+  "executionFlow": [
+    {
+      "loop": {
+        "input": "${ alert.Assets }",
+        "steps": [
+          {
+            "action": {
+              "function": {
+                "type": "avScan",
+                "params": {
+                  "scope": {
+                    "area": "full",
+                    "allowScanNetworkDrives": false
+                  },
+                  "wait": true
+                },
+                "assets": "${ . | map(.ID) }"
+              },
+              "output": {
+                "filter": "${ . }",
+                "action": "overwrite"
+              }
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "name": "KESB_ADDITIVE_TEST",
+  "timeouts": [
+    {
+      "name": "default",
+      "scheduleToCloseTimeout": "20m"
+    }
+  ],
+  "playbookRunTimeout": "30m",
+  "version": "1",
+  "description": "KESB Full AVScan"
+}
