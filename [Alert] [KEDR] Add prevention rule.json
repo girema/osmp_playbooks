@@ -1,0 +1,22 @@
+{
+  "version": "1",
+  "dslSpecVersion": "1.1.0",
+  "actionsSpecVersion": "1",
+  "executionFlow": [
+    {
+      "action": {
+        "function": {
+          "type": "addFilePreventionRules",
+          "params": {
+            "files": "${}"
+          },
+          "assets": "${[ alert.Assets[] | select(.Type == \"host\") | .ID ]}"
+        },
+        "onError": "stop",
+        "timeout": {
+          "scheduleToCloseTimeout": "24h"
+        }
+      }
+    }
+  ]
+}
