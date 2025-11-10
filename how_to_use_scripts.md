@@ -12,7 +12,7 @@
 
 ### Installation Examples
 **Ubuntu / Debian:**
-```bash
+```bash```
 sudo apt-get update && sudo apt-get install -y jq openssh-client
 
 # Windows Response Script — Dependencies and Requirements
@@ -27,7 +27,7 @@ sudo apt-get update && sudo apt-get install -y jq openssh-client
 | `argparse` | Command-line argument parsing (included in Python standard library) |
 
 ### Installation (Debian/Ubuntu)
-```bash
+```bash```
 sudo apt-get update
 sudo apt-get install -y python3 python3-pip python3-dev libsasl2-dev libldap2-dev libssl-dev
 pip3 install python-ldap
@@ -48,7 +48,7 @@ pip3 install python-ldap
 | `re`, `json`, `sys`, `time` (built-in) | Input parsing, JSON handling, delays |
 
 ### Installation on Ubuntu/Debian
-```bash
+```bash```
 sudo apt-get update
 sudo apt-get install -y python3 python3-pip
 pip3 install requests ipwhois python-whois
@@ -67,7 +67,7 @@ pip3 install requests ipwhois python-whois
 | `time`, `re`, `json`, `sys` | Core Python modules (standard library) |
 
 ### Installation (Ubuntu/Debian)
-```bash
+```bash```
 sudo apt update
 sudo apt install -y python3 python3-pip
 pip3 install requests flask
