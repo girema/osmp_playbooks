@@ -10,7 +10,7 @@
           "params": {
             "files": "${}"
           },
-          "assets": "${[ alert.Assets[] | select(.Type == \"host\") | .ID ]}"
+          "assets": "${ alert.Assets | map(select(.Type==\"host\") | .ID) }"
         },
         "onError": "stop",
         "timeout": {
