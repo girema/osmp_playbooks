@@ -7,7 +7,7 @@
       "action": {
         "function": {
           "type": "netIsolateOff",
-          "assets": "${[alert.Assets[] | select(.Type==\"host\") | map(.ID) ]}"
+          "assets": "${ alert.Assets | map(select(.Type==\"host\") | .ID) }"
         }
       }
     }
