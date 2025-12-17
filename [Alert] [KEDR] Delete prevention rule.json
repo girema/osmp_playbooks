@@ -13,7 +13,7 @@
               "SOME_SHA256"
             ]
           },
-          "assets": "${[ alert.Assets[] | select(.Type == \"host\") | .ID ]}"
+          "assets": "${ alert.Assets | map(select(.Type==\"host\") | .ID) }"
         },
         "onError": "stop",
         "timeout": {
