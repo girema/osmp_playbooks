@@ -97,7 +97,7 @@ def process_url(url):
 
 DEBUG = False
 
-API_KEY = "pzpmpafx05a5ce7cj3iz95d9adbabcecjntlm4p1074db987i87wwcnn15d4bc1c"
+API_KEY = ""
 HEADERS = {
     "api-key": API_KEY,
     "User-Agent": "Falcon Sandbox",
