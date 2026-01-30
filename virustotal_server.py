@@ -4,7 +4,7 @@ import time
 from flask import Flask, request, jsonify
 import base64
 
-API_KEY = 'ad0f386a9df8032e4a188ca378135e259cde81939ade109ed523c0d2ec3debec'  # ? insert your VirusTotal API key here
+API_KEY = ''  # ? insert your VirusTotal API key here
 VT_URL = 'https://www.virustotal.com/api/v3/'
 
 HEADERS = {
